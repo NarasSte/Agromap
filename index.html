@@ -1,0 +1,468 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroMap — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ══════════════ SIDEBAR ══════════════ -->
+  <aside class="sidebar">
+
+    <div class="sidebar__brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <!-- Grid lines -->
+          <line x1="12" y1="4" x2="12" y2="32" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.5"/>
+          <line x1="24" y1="4" x2="24" y2="32" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.5"/>
+          <line x1="4"  y1="12" x2="32" y2="12" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.5"/>
+          <line x1="4"  y1="24" x2="32" y2="24" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.5"/>
+          <!-- Network nodes -->
+          <circle cx="18" cy="18" r="3.5" fill="var(--accent-green)" />
+          <circle cx="8"  cy="8"  r="2"   fill="var(--accent-blue)"  opacity="0.8"/>
+          <circle cx="28" cy="8"  r="2"   fill="var(--accent-blue)"  opacity="0.8"/>
+          <circle cx="8"  cy="28" r="2"   fill="var(--accent-blue)"  opacity="0.8"/>
+          <circle cx="28" cy="28" r="2"   fill="var(--accent-blue)"  opacity="0.8"/>
+          <!-- Connection lines -->
+          <line x1="18" y1="18" x2="8"  y2="8"  stroke="var(--accent-green)" stroke-width="1" stroke-opacity="0.5"/>
+          <line x1="18" y1="18" x2="28" y2="8"  stroke="var(--accent-green)" stroke-width="1" stroke-opacity="0.5"/>
+          <line x1="18" y1="18" x2="8"  y2="28" stroke="var(--accent-green)" stroke-width="1" stroke-opacity="0.5"/>
+          <line x1="18" y1="18" x2="28" y2="28" stroke="var(--accent-green)" stroke-width="1" stroke-opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Agro<strong>Map</strong></span>
+        <span class="brand-tagline">Controle Agrícola</span>
+      </div>
+    </div>
+
+    <nav class="sidebar__nav">
+      <span class="nav-label">Principal</span>
+      <ul>
+        <li class="nav-item nav-item--active">
+          <a href="#" class="nav-link">
+            <span class="nav-icon">
+              <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity=".5"/><rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".5"/><rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".5"/></svg>
+            </span>
+            Dashboard
+            <span class="nav-indicator"></span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <span class="nav-icon">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M10 2C6.5 2 3.5 5 3.5 8.5c0 4.5 6.5 10 6.5 10s6.5-5.5 6.5-10C16.5 5 13.5 2 10 2Z" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="8.5" r="2.5" fill="currentColor" opacity=".6"/></svg>
+            </span>
+            Culturas
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <span class="nav-icon">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M3 14s1.5-5 7-5 7 5 7 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 9V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="3" r="1" fill="currentColor"/><path d="M6 6l-2-2M14 6l2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </span>
+            Clima &amp; Solo
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <span class="nav-icon">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M5 16V8l5-5 5 5v8" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 16v-4h4v4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3 16h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            Irrigação
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <span class="nav-icon">
+              <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            Pragas
+          </a>
+        </li>
+      </ul>
+
+      <span class="nav-label" style="margin-top: 1.5rem;">Gestão</span>
+      <ul>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <span class="nav-icon">
+              <svg viewBox="0 0 20 20" fill="none"><rect x="2.5" y="4.5" width="15" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 8h15" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 2v2M13.5 2v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            Financeiro
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar__farm">
+      <div class="farm-avatar">FA</div>
+      <div class="farm-info">
+        <span class="farm-name">Fazenda Aurora</span>
+        <span class="farm-size">842 ha · MT</span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ══════════════ MAIN CONTENT ══════════════ -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar__left">
+        <h1 class="page-title">Dashboard</h1>
+        <span class="page-date">Quarta-feira, 28 de maio de 2025</span>
+      </div>
+      <div class="topbar__right">
+        <div class="search-bar">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M11.5 11.5 14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <input type="text" placeholder="Buscar talhão, cultura..." readonly />
+        </div>
+        <button class="icon-btn" title="Notificações" aria-label="Notificações">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 2a6 6 0 0 0-6 6v3l-1.5 2.5h15L16 11V8a6 6 0 0 0-6-6Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 15.5a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="4" r="2.5" fill="var(--accent-yellow)" stroke="var(--bg-surface)" stroke-width="1.5"/></svg>
+        </button>
+        <div class="user-avatar">JP</div>
+      </div>
+    </header>
+
+    <!-- GREETING BANNER -->
+    <section class="greeting">
+      <div class="greeting__text">
+        <p class="greeting__sub">Olá, Produtor 👋</p>
+        <h2 class="greeting__title">Sua fazenda está com boa performance hoje.</h2>
+      </div>
+      <div class="greeting__badge">
+        <span class="badge badge--green">
+          <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><circle cx="6" cy="6" r="4" fill="currentColor" opacity=".3"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg>
+          Todos os sistemas operacionais
+        </span>
+      </div>
+    </section>
+
+    <!-- KPI CARDS -->
+    <section class="kpi-grid" aria-label="Indicadores de desempenho">
+
+      <article class="kpi-card kpi-card--weather">
+        <div class="kpi-card__icon">
+          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="7" fill="currentColor" opacity=".2"/>
+            <circle cx="16" cy="16" r="5" fill="currentColor"/>
+            <path d="M16 3v3M16 26v3M3 16h3M26 16h3M6.5 6.5l2 2M23.5 23.5l2 2M23.5 6.5l-2 2M6.5 23.5l2-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="kpi-card__body">
+          <span class="kpi-label">Temperatura</span>
+          <span class="kpi-value">28°C</span>
+          <span class="kpi-detail">
+            <svg viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 6l3-3 2 2 3-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Ensolarado · Vento 12 km/h
+          </span>
+        </div>
+        <div class="kpi-card__trend kpi-card__trend--up">+2°</div>
+      </article>
+
+      <article class="kpi-card kpi-card--soil">
+        <div class="kpi-card__icon">
+          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <path d="M8 26c0-5 3-9 8-9s8 4 8 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16 17V8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 12l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <ellipse cx="16" cy="27" rx="8" ry="2" fill="currentColor" opacity=".15"/>
+          </svg>
+        </div>
+        <div class="kpi-card__body">
+          <span class="kpi-label">Umidade do Solo</span>
+          <span class="kpi-value">65<small>%</small></span>
+          <div class="kpi-bar-track">
+            <div class="kpi-bar-fill" style="--bar-pct: 65%"></div>
+          </div>
+          <span class="kpi-detail kpi-detail--green">Nível ideal para plantio</span>
+        </div>
+      </article>
+
+      <article class="kpi-card kpi-card--harvest">
+        <div class="kpi-card__icon">
+          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <path d="M6 26c4-8 14-14 20-12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 26c3-2 8-2 12-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M22 8c-2 4-4 10-4 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="kpi-card__body">
+          <span class="kpi-label">Próxima Colheita</span>
+          <span class="kpi-value">12 <small>dias</small></span>
+          <span class="kpi-detail">
+            <svg viewBox="0 0 10 10" fill="none" aria-hidden="true"><circle cx="5" cy="5" r="3.5" stroke="currentColor" stroke-width="1"/><path d="M5 3v2l1.2 1.2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+            Soja · Talhão 3A e 4B
+          </span>
+        </div>
+        <span class="kpi-tag">Em andamento</span>
+      </article>
+
+      <article class="kpi-card kpi-card--irrigation">
+        <div class="kpi-card__icon">
+          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <path d="M16 4c0 0-10 9-10 16a10 10 0 0 0 20 0C26 13 16 4 16 4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M10 22a6 6 0 0 0 6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="kpi-card__body">
+          <span class="kpi-label">Irrigação</span>
+          <span class="kpi-value">Ativa</span>
+          <span class="kpi-detail">
+            <span class="pulse-dot" aria-hidden="true"></span>
+            Zona Norte · 340 L/h
+          </span>
+        </div>
+        <div class="kpi-card__toggle">
+          <div class="toggle toggle--on" aria-label="Irrigação ligada" role="img">
+            <div class="toggle__thumb"></div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MAIN CONTENT GRID: MAP + TABLE -->
+    <section class="content-grid">
+
+      <!-- MAP AREA -->
+      <div class="map-panel">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title">Mapeamento de Talhões</h3>
+            <p class="panel-sub">Fazenda Aurora — visão geral da quadra</p>
+          </div>
+          <div class="panel-actions">
+            <button class="chip chip--active">Satélite</button>
+            <button class="chip">NDVI</button>
+            <button class="chip">Irrigação</button>
+          </div>
+        </div>
+
+        <div class="field-grid" aria-label="Mapa de talhões">
+
+          <!-- Row 1 -->
+          <div class="field-cell field-cell--soy field-cell--high">
+            <span class="field-id">1A</span>
+            <span class="field-crop">Soja</span>
+            <div class="field-status field-status--great">98%</div>
+          </div>
+          <div class="field-cell field-cell--corn field-cell--high">
+            <span class="field-id">1B</span>
+            <span class="field-crop">Milho</span>
+            <div class="field-status field-status--great">94%</div>
+          </div>
+          <div class="field-cell field-cell--soy field-cell--high">
+            <span class="field-id">1C</span>
+            <span class="field-crop">Soja</span>
+            <div class="field-status field-status--great">97%</div>
+          </div>
+          <div class="field-cell field-cell--empty">
+            <span class="field-id">1D</span>
+            <span class="field-crop">Pousio</span>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="field-cell field-cell--cotton field-cell--med">
+            <span class="field-id">2A</span>
+            <span class="field-crop">Algodão</span>
+            <div class="field-status field-status--ok">76%</div>
+          </div>
+          <div class="field-cell field-cell--soy field-cell--high">
+            <span class="field-id">2B</span>
+            <span class="field-crop">Soja</span>
+            <div class="field-status field-status--great">91%</div>
+          </div>
+          <div class="field-cell field-cell--corn field-cell--low">
+            <span class="field-id">2C</span>
+            <span class="field-crop">Milho</span>
+            <div class="field-status field-status--warn">62%</div>
+          </div>
+          <div class="field-cell field-cell--soy field-cell--high">
+            <span class="field-id">2D</span>
+            <span class="field-crop">Soja</span>
+            <div class="field-status field-status--great">89%</div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="field-cell field-cell--empty">
+            <span class="field-id">3A</span>
+            <span class="field-crop">Pousio</span>
+          </div>
+          <div class="field-cell field-cell--cotton field-cell--high">
+            <span class="field-id">3B</span>
+            <span class="field-crop">Algodão</span>
+            <div class="field-status field-status--great">88%</div>
+          </div>
+          <div class="field-cell field-cell--soy field-cell--high">
+            <span class="field-id">3C</span>
+            <span class="field-crop">Soja</span>
+            <div class="field-status field-status--great">95%</div>
+          </div>
+          <div class="field-cell field-cell--corn field-cell--med">
+            <span class="field-id">3D</span>
+            <span class="field-crop">Milho</span>
+            <div class="field-status field-status--ok">79%</div>
+          </div>
+
+          <!-- Row 4 -->
+          <div class="field-cell field-cell--soy field-cell--high">
+            <span class="field-id">4A</span>
+            <span class="field-crop">Soja</span>
+            <div class="field-status field-status--great">93%</div>
+          </div>
+          <div class="field-cell field-cell--corn field-cell--high">
+            <span class="field-id">4B</span>
+            <span class="field-crop">Soja</span>
+            <div class="field-status field-status--great">90%</div>
+          </div>
+          <div class="field-cell field-cell--empty">
+            <span class="field-id">4C</span>
+            <span class="field-crop">Pousio</span>
+          </div>
+          <div class="field-cell field-cell--soy field-cell--med">
+            <span class="field-id">4D</span>
+            <span class="field-crop">Soja</span>
+            <div class="field-status field-status--ok">74%</div>
+          </div>
+
+        </div>
+
+        <div class="map-legend" aria-label="Legenda">
+          <div class="legend-item"><span class="legend-dot" style="background: var(--color-soy)"></span>Soja</div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--color-corn)"></span>Milho</div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--color-cotton)"></span>Algodão</div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--bg-muted)"></span>Pousio</div>
+          <div class="legend-spacer"></div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--accent-green)"></span>&gt;85% NDVI</div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--accent-yellow)"></span>60–85%</div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--color-warn)"></span>&lt;60%</div>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-panel">
+        <div class="panel-header panel-header--col">
+          <div>
+            <h3 class="panel-title">Últimos Insumos Utilizados</h3>
+            <p class="panel-sub">Últimos 7 dias de aplicações</p>
+          </div>
+          <a href="#" class="link-btn">Ver todos →</a>
+        </div>
+
+        <div class="table-wrapper" role="region" aria-label="Tabela de insumos">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Insumo</th>
+                <th>Tipo</th>
+                <th>Talhão</th>
+                <th>Data</th>
+                <th>Qtd.</th>
+                <th>Custo</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-main">
+                  <span class="product-dot" style="background:#4CAF50"></span>
+                  Roundup WG
+                </td>
+                <td><span class="type-tag type-tag--herb">Herbicida</span></td>
+                <td class="td-mono">2C, 3D</td>
+                <td class="td-mono">26/05</td>
+                <td class="td-mono">18 kg</td>
+                <td class="td-value">R$ 1.240</td>
+                <td><span class="status-pill status-pill--done">Concluído</span></td>
+              </tr>
+              <tr>
+                <td class="td-main">
+                  <span class="product-dot" style="background:#2196F3"></span>
+                  Amistar Top
+                </td>
+                <td><span class="type-tag type-tag--fung">Fungicida</span></td>
+                <td class="td-mono">1A, 1C</td>
+                <td class="td-mono">25/05</td>
+                <td class="td-mono">8 L</td>
+                <td class="td-value">R$ 2.890</td>
+                <td><span class="status-pill status-pill--done">Concluído</span></td>
+              </tr>
+              <tr>
+                <td class="td-main">
+                  <span class="product-dot" style="background:#FF9800"></span>
+                  Uréia 45%
+                </td>
+                <td><span class="type-tag type-tag--fert">Fertilizante</span></td>
+                <td class="td-mono">4A, 4B</td>
+                <td class="td-mono">24/05</td>
+                <td class="td-mono">320 kg</td>
+                <td class="td-value">R$ 3.520</td>
+                <td><span class="status-pill status-pill--done">Concluído</span></td>
+              </tr>
+              <tr>
+                <td class="td-main">
+                  <span class="product-dot" style="background:#9C27B0"></span>
+                  Karate Zeon
+                </td>
+                <td><span class="type-tag type-tag--insec">Inseticida</span></td>
+                <td class="td-mono">2A, 3B</td>
+                <td class="td-mono">23/05</td>
+                <td class="td-mono">4 L</td>
+                <td class="td-value">R$ 680</td>
+                <td><span class="status-pill status-pill--pending">Pendente</span></td>
+              </tr>
+              <tr>
+                <td class="td-main">
+                  <span class="product-dot" style="background:#FF9800"></span>
+                  MAP Granulado
+                </td>
+                <td><span class="type-tag type-tag--fert">Fertilizante</span></td>
+                <td class="td-mono">1B, 2D</td>
+                <td class="td-mono">22/05</td>
+                <td class="td-mono">500 kg</td>
+                <td class="td-value">R$ 5.100</td>
+                <td><span class="status-pill status-pill--done">Concluído</span></td>
+              </tr>
+              <tr>
+                <td class="td-main">
+                  <span class="product-dot" style="background:#4CAF50"></span>
+                  Decis 25 EC
+                </td>
+                <td><span class="type-tag type-tag--insec" style="background:rgba(156,39,176,.12);color:#9C27B0;">Inseticida</span></td>
+                <td class="td-mono">3C, 4D</td>
+                <td class="td-mono">21/05</td>
+                <td class="td-mono">6 L</td>
+                <td class="td-value">R$ 920</td>
+                <td><span class="status-pill status-pill--prog">Em curso</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <span class="table-total">Total gasto (7 dias): <strong>R$ 14.350</strong></span>
+          <div class="pagination">
+            <button class="page-btn page-btn--disabled" disabled aria-label="Anterior">‹</button>
+            <button class="page-btn page-btn--active" aria-current="page">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn" aria-label="Próximo">›</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+</body>
+</html>
