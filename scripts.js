@@ -2,58 +2,23 @@
 // AGROMAP - JavaScript Functions
 // ══════════════════════════════════════════════
 
-// LocalStorage Management
-const CULTURES_KEY = 'agromap_cultures';
+// API Configuration
+const API_BASE_URL = 'http://localhost:3000/api';
 
-// Get cultures from localStorage
-function getCultures() {
-  const stored = localStorage.getItem(CULTURES_KEY);
-  return stored ? JSON.parse(stored) : getDefaultCultures();
-}
-
-// Save cultures to localStorage
-function saveCultures(cultures) {
-  localStorage.setItem(CULTURES_KEY, JSON.stringify(cultures));
-}
-
-// Get default mock cultures (for initialization)
-function getDefaultCultures() {
-  return [
-    {
-      id: 1,
-      nome: 'Soja',
-      nomeCientifico: 'Glycine max',
-      tipo: 'soy',
-      area: 320,
-      talhoes: 8,
-      diasColheita: 12,
-      desenvolvimento: 78,
-      status: 'ativa'
-    },
-    {
-      id: 2,
-      nome: 'Milho',
-      nomeCientifico: 'Zea mays',
-      tipo: 'corn',
-      area: 185,
-      talhoes: 5,
-      diasColheita: 28,
-      desenvolvimento: 45,
-      status: 'ativa'
-    },
-    {
-      id: 3,
-      nome: 'Algodão',
-      nomeCientifico: 'Gossypium hirsutum',
-      tipo: 'cotton',
-      area: 95,
-      talhoes: 3,
-      diasColheita: 45,
-      desenvolvimento: 32,
-      status: 'ativa'
+// Get cultures from API
+async function getCultures() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/culturas`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch cultures');
     }
-  ];
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching cultures:', error);
+    return [];
+  }
 }
+
 
 // Modal functionality
 function openModal() {
@@ -76,40 +41,48 @@ function updateRangeValue(input) {
   input.nextElementSibling.textContent = value + '%';
 }
 
-function saveCulture(event) {
+async function saveCulture(event) {
   event.preventDefault();
   
-  // Get form values
+  // Get form values and map to backend fields
   const formData = {
-    id: Date.now(), // Simple unique ID
     nome: document.getElementById('nome-cultura').value,
-    nomeCientifico: document.getElementById('nome-cientifico').value,
-    tipo: document.getElementById('tipo-cultura').value,
-    area: parseInt(document.getElementById('area-plantada').value),
-    talhoes: parseInt(document.getElementById('num-talhoes').value),
-    diasColheita: parseInt(document.getElementById('dias-colheita').value),
-    desenvolvimento: parseInt(document.getElementById('desenvolvimento').value),
-    status: document.getElementById('status-cultura').value
+    nome_cientifico: document.getElementById('nome-cientifico').value,
+    ciclo_medio_dias: parseInt(document.getElementById('dias-colheita').value),
+    graus_dia_acumulados: parseInt(document.getElementById('desenvolvimento').value),
+    coeficiente_kc: parseFloat(document.getElementById('area-plantada').value) / 100,
+    temperatura_otima_min: 20,
+    temperatura_otima_max: 30
   };
 
-  // Get existing cultures and add new one
-  const cultures = getCultures();
-  cultures.push(formData);
-  
-  // Save to localStorage
-  saveCultures(cultures);
-  
-  // Refresh display
-  renderCultures();
-  updateSummary();
-  
-  // Close modal
-  closeModal();
+  try {
+    const response = await fetch(`${API_BASE_URL}/culturas`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save culture');
+    }
+
+    // Refresh display
+    renderCultures();
+    updateSummary();
+    
+    // Close modal
+    closeModal();
+  } catch (error) {
+    console.error('Error saving culture:', error);
+    alert('Erro ao salvar cultura. Tente novamente.');
+  }
 }
 
 // Render cultures dynamically
-function renderCultures() {
-  const cultures = getCultures();
+async function renderCultures() {
+  const cultures = await getCultures();
   const grid = document.querySelector('.culture-grid');
   
   // Clear existing content
@@ -126,40 +99,46 @@ function renderCultures() {
 function createCultureCard(culture) {
   const article = document.createElement('article');
   article.className = 'culture-card';
+  
+  // Map backend fields to frontend display
+  const area = culture.coeficiente_kc ? Math.round(culture.coeficiente_kc * 100) : 0;
+  const diasColheita = culture.ciclo_medio_dias || 0;
+  const desenvolvimento = culture.graus_dia_acumulados || 0;
+  
   article.innerHTML = `
     <div class="culture-card__header">
-      <div class="culture-icon culture-icon--${culture.tipo}">
-        <svg viewBox="0 0 24 24" fill="none">${getIconSvg(culture.tipo)}</svg>
+      <div class="culture-icon culture-icon--other">
+        <svg viewBox="0 0 24 24" fill="none">${getIconSvg('other')}</svg>
       </div>
       <div class="culture-info">
         <h3 class="culture-name">${culture.nome}</h3>
-        <span class="culture-scientific">${culture.nomeCientifico}</span>
+        <span class="culture-scientific">${culture.nome_cientifico || 'N/A'}</span>
       </div>
-      <div class="culture-status culture-status--${culture.status === 'ativa' ? 'active' : 'inactive'}">${formatStatus(culture.status)}</div>
+      <div class="culture-status culture-status--active">Ativa</div>
     </div>
     
     <div class="culture-stats">
       <div class="stat-item">
         <span class="stat-label">Área Plantada</span>
-        <span class="stat-value">${culture.area} ha</span>
+        <span class="stat-value">${area} ha</span>
       </div>
       <div class="stat-item">
-        <span class="stat-label">Talhões</span>
-        <span class="stat-value">${culture.talhoes}</span>
+        <span class="stat-label">Ciclo Médio</span>
+        <span class="stat-value">${diasColheita} dias</span>
       </div>
       <div class="stat-item">
-        <span class="stat-label">Próxima Colheita</span>
-        <span class="stat-value">${culture.diasColheita} dias</span>
+        <span class="stat-label">Graus Dia</span>
+        <span class="stat-value">${desenvolvimento}</span>
       </div>
     </div>
     
     <div class="culture-progress">
       <div class="progress-header">
-        <span class="progress-label">Desenvolvimento</span>
-        <span class="progress-value">${culture.desenvolvimento}%</span>
+        <span class="progress-label">Coeficiente Kc</span>
+        <span class="progress-value">${culture.coeficiente_kc || 0}</span>
       </div>
       <div class="progress-bar">
-        <div class="progress-fill" style="--progress: ${culture.desenvolvimento}%"></div>
+        <div class="progress-fill" style="--progress: ${(culture.coeficiente_kc || 0) * 100}%"></div>
       </div>
     </div>
     
@@ -200,47 +179,59 @@ function formatStatus(status) {
 }
 
 // Update summary section
-function updateSummary() {
-  const cultures = getCultures();
-  const activeCultures = cultures.filter(c => c.status === 'ativa');
-  const totalArea = cultures.reduce((sum, c) => sum + c.area, 0);
-  const totalTalhoes = cultures.reduce((sum, c) => sum + c.talhoes, 0);
-  const avgDevelopment = activeCultures.length > 0 
-    ? Math.round(activeCultures.reduce((sum, c) => sum + c.desenvolvimento, 0) / activeCultures.length)
+async function updateSummary() {
+  const cultures = await getCultures();
+  const totalArea = cultures.reduce((sum, c) => sum + (c.coeficiente_kc ? Math.round(c.coeficiente_kc * 100) : 0), 0);
+  const avgCiclo = cultures.length > 0 
+    ? Math.round(cultures.reduce((sum, c) => sum + (c.ciclo_medio_dias || 0), 0) / cultures.length)
+    : 0;
+  const avgGrausDia = cultures.length > 0 
+    ? Math.round(cultures.reduce((sum, c) => sum + (c.graus_dia_acumulados || 0), 0) / cultures.length)
     : 0;
 
   const summaryStats = document.querySelectorAll('.summary-stat');
   if (summaryStats.length >= 4) {
-    summaryStats[0].querySelector('.summary-value').textContent = activeCultures.length;
+    summaryStats[0].querySelector('.summary-value').textContent = cultures.length;
     summaryStats[1].querySelector('.summary-value').textContent = totalArea + ' ha';
-    summaryStats[2].querySelector('.summary-value').textContent = totalTalhoes;
-    summaryStats[3].querySelector('.summary-value').textContent = avgDevelopment + '%';
+    summaryStats[2].querySelector('.summary-value').textContent = avgCiclo + ' dias';
+    summaryStats[3].querySelector('.summary-value').textContent = avgGrausDia;
   }
 }
 
 // Delete culture
-function deleteCulture(id) {
+async function deleteCulture(id) {
   if (confirm('Tem certeza que deseja excluir esta cultura?')) {
-    const cultures = getCultures();
-    const filtered = cultures.filter(c => c.id !== id);
-    saveCultures(filtered);
-    renderCultures();
-    updateSummary();
+    try {
+      const response = await fetch(`${API_BASE_URL}/culturas/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete culture');
+      }
+
+      renderCultures();
+      updateSummary();
+    } catch (error) {
+      console.error('Error deleting culture:', error);
+      alert('Erro ao excluir cultura. Tente novamente.');
+    }
   }
 }
 
 // View culture details (placeholder)
-function viewDetails(id) {
-  const cultures = getCultures();
+async function viewDetails(id) {
+  const cultures = await getCultures();
   const culture = cultures.find(c => c.id === id);
   if (culture) {
-    alert(`Detalhes da cultura: ${culture.nome}\n\nNome Científico: ${culture.nomeCientifico}\nÁrea: ${culture.area} ha\nTalhões: ${culture.talhoes}\nStatus: ${formatStatus(culture.status)}`);
+    const area = culture.coeficiente_kc ? Math.round(culture.coeficiente_kc * 100) : 0;
+    alert(`Detalhes da cultura: ${culture.nome}\n\nNome Científico: ${culture.nome_cientifico || 'N/A'}\nCiclo Médio: ${culture.ciclo_medio_dias || 0} dias\nGraus Dia Acumulados: ${culture.graus_dia_acumulados || 0}\nCoeficiente Kc: ${culture.coeficiente_kc || 0}\nTemp. Ótima Min: ${culture.temperatura_otima_min || 0}°C\nTemp. Ótima Max: ${culture.temperatura_otima_max || 0}°C`);
   }
 }
 
 // Manage culture (placeholder)
-function manageCulture(id) {
-  const cultures = getCultures();
+async function manageCulture(id) {
+  const cultures = await getCultures();
   const culture = cultures.find(c => c.id === id);
   if (culture) {
     alert(`Gerenciar cultura: ${culture.nome}\n\nFuncionalidade de gerenciamento será implementada em breve.`);

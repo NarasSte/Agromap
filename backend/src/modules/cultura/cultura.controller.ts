@@ -13,6 +13,7 @@ export class CulturaController {
 
   @Get()
   findAll() {
+    console.log('hello world -> buscando culturas')
     return this.culturaService.findAll();
   }
 
