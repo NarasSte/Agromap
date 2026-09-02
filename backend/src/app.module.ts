@@ -44,6 +44,8 @@ import { UsoEquipamento } from './entities/uso-equipamento.entity';
 import { TalhaoSolo } from './entities/talhao-solo.entity';
 import { RecomendacaoClima } from './entities/recomendacao-clima.entity';
 
+import { AddCulturaColumns1788378529051 } from './migrations/1788378529051-AddCulturaColumns';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -80,6 +82,8 @@ import { RecomendacaoClima } from './entities/recomendacao-clima.entity';
           RecomendacaoClima,
         ],
         synchronize: false,
+        migrations: [AddCulturaColumns1788378529051],
+        migrationsRun: true,
         logging: true,
       }),
       inject: [ConfigService],

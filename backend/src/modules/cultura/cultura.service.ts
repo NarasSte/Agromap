@@ -16,7 +16,10 @@ export class CulturaService {
   }
 
   async findAll(): Promise<Cultura[]> {
-    return await this.culturaRepository.find();
+    
+    const dados = await this.culturaRepository.find();
+    console.log("passando por aqui", dados)
+    return dados;
   }
 
   async findOne(id: number): Promise<Cultura> {

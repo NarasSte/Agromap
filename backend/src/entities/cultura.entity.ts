@@ -25,4 +25,22 @@ export class Cultura {
 
   @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
   temperatura_otima_max: number;
+
+  @Column({ length: 50, nullable: true })
+  tipo: string;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  area: number;
+
+  @Column({ nullable: true })
+  talhoes: number;
+
+  @Column({ nullable: true })
+  dias_colheita: number;
+
+  @Column({ nullable: true })
+  desenvolvimento: number;
+
+  @Column({ length: 50, nullable: true })
+  status: string;
 }
