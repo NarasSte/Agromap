@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import Sidebar from '../components/Sidebar'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+
 interface Culture {
   id: number
   nome: string
@@ -13,21 +15,57 @@ interface Culture {
   status: string
 }
 
-const CULTURES_KEY = 'agromap_cultures'
-
-const getDefaultCultures = (): Culture[] => [
-  { id: 1, nome: 'Soja', nomeCientifico: 'Glycine max', tipo: 'soy', area: 320, talhoes: 8, diasColheita: 12, desenvolvimento: 78, status: 'ativa' },
-  { id: 2, nome: 'Milho', nomeCientifico: 'Zea mays', tipo: 'corn', area: 185, talhoes: 5, diasColheita: 28, desenvolvimento: 45, status: 'ativa' },
-  { id: 3, nome: 'Algodão', nomeCientifico: 'Gossypium hirsutum', tipo: 'cotton', area: 95, talhoes: 3, diasColheita: 45, desenvolvimento: 32, status: 'ativa' },
-]
-
-const getCultures = (): Culture[] => {
-  const stored = localStorage.getItem(CULTURES_KEY)
-  return stored ? JSON.parse(stored) : getDefaultCultures()
+interface CulturaApi {
+  id: number
+  nome: string
+  nome_cientifico?: string
+  ciclo_medio_dias?: number | null
+  graus_dia_acumulados?: number | null
+  coeficiente_kc?: string | null
+  temperatura_otima_min?: string | null
+  temperatura_otima_max?: string | null
+  tipo?: string
+  area?: number | string | null
+  talhoes?: number | null
+  dias_colheita?: number | null
+  desenvolvimento?: number | null
+  status?: string
 }
 
-const saveCultures = (cultures: Culture[]) => {
-  localStorage.setItem(CULTURES_KEY, JSON.stringify(cultures))
+const inferTipo = (nome: string): string => {
+  const n = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  if (n.includes('soja')) return 'soy'
+  if (n.includes('milho')) return 'corn'
+  if (n.includes('algodao')) return 'cotton'
+  if (n.includes('trigo')) return 'wheat'
+  if (n.includes('arroz')) return 'rice'
+  if (n.includes('feijao')) return 'beans'
+  if (n.includes('cafe')) return 'coffee'
+  if (n.includes('cana')) return 'sugarcane'
+  return 'other'
+}
+
+const toCulture = (c: CulturaApi): Culture => ({
+  id: c.id,
+  nome: c.nome,
+  nomeCientifico: c.nome_cientifico || '',
+  tipo: c.tipo || inferTipo(c.nome),
+  area: Number(c.area ?? 0),
+  talhoes: Number(c.talhoes ?? 0),
+  diasColheita: c.dias_colheita ?? c.ciclo_medio_dias ?? 0,
+  desenvolvimento: Number(c.desenvolvimento ?? 0),
+  status: c.status || 'ativa',
+})
+
+const emptyForm = {
+  nome: '',
+  nomeCientifico: '',
+  tipo: '',
+  area: '',
+  talhoes: '',
+  diasColheita: '',
+  desenvolvimento: 0,
+  status: 'ativa',
 }
 
 const iconByType: Record<string, React.ReactNode> = {
@@ -72,24 +110,29 @@ const formatStatus = (status: string) => {
   return map[status] || status
 }
 
-const emptyForm = {
-  nome: '',
-  nomeCientifico: '',
-  tipo: '',
-  area: '',
-  talhoes: '',
-  diasColheita: '',
-  desenvolvimento: 0,
-  status: 'ativa',
-}
-
 export default function Culturas() {
   const [cultures, setCultures] = useState<Culture[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [form, setForm] = useState(emptyForm)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    setCultures(getCultures())
+    let cancelled = false
+    fetch(`${API_URL}/culturas`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Erro ao carregar culturas')
+        return res.json()
+      })
+      .then((data: CulturaApi[]) => {
+        if (!cancelled) setCultures(data.map(toCulture))
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        if (!cancelled) setIsLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const active = useMemo(() => cultures.filter((c) => c.status === 'ativa'), [cultures])
@@ -106,35 +149,49 @@ export default function Culturas() {
     setIsOpen(false)
   }
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const next: Culture = {
-      id: Date.now(),
+    const payload = {
       nome: form.nome,
-      nomeCientifico: form.nomeCientifico,
+      nome_cientifico: form.nomeCientifico,
       tipo: form.tipo,
-      area: Number(form.area) || 0,
-      talhoes: Number(form.talhoes) || 0,
-      diasColheita: Number(form.diasColheita) || 0,
+      area: Number(form.area) || null,
+      talhoes: Number(form.talhoes) || null,
+      dias_colheita: Number(form.diasColheita) || null,
       desenvolvimento: form.desenvolvimento,
       status: form.status,
     }
-    const list = [...cultures, next]
-    setCultures(list)
-    saveCultures(list)
-    close()
+    try {
+      const res = await fetch(`${API_URL}/culturas`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) throw new Error('Erro ao salvar cultura')
+      const saved: CulturaApi = await res.json()
+      setCultures((prev) => [...prev, toCulture(saved)])
+      setForm(emptyForm)
+      close()
+    } catch (err) {
+      console.error(err)
+      alert('Não foi possível salvar a cultura')
+    }
   }
 
-  const remove = (id: number) => {
-    if (confirm('Tem certeza que deseja excluir esta cultura?')) {
-      const list = cultures.filter((c) => c.id !== id)
-      setCultures(list)
-      saveCultures(list)
+  const remove = async (id: number) => {
+    if (!confirm('Tem certeza que deseja excluir esta cultura?')) return
+    try {
+      const res = await fetch(`${API_URL}/culturas/${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Erro ao excluir cultura')
+      setCultures((prev) => prev.filter((c) => c.id !== id))
+    } catch (err) {
+      console.error(err)
+      alert('Não foi possível excluir a cultura')
     }
   }
 
   const view = (c: Culture) => {
-    alert(`Detalhes da cultura: ${c.nome}\n\nNome Científico: ${c.nomeCientifico}\nÁrea: ${c.area} ha\nTalhões: ${c.talhoes}\nStatus: ${formatStatus(c.status)}`)
+    alert(`Detalhes da cultura: ${c.nome}\n\nNome Científico: ${c.nomeCientifico}\nÁrea: ${c.area} ha\nTalhões: ${c.talhoes}\nDias para colheita: ${c.diasColheita} dias\nStatus: ${formatStatus(c.status)}`)
   }
 
   const manage = (c: Culture) => {
@@ -169,61 +226,67 @@ export default function Culturas() {
         </header>
 
         <section className="culture-grid">
-          {cultures.map((culture) => (
-            <article className="culture-card" key={culture.id}>
-              <div className="culture-card__header">
-                <div className={`culture-icon culture-icon--${culture.tipo}`}>
-                  <svg viewBox="0 0 24 24" fill="none">
-                    {iconByType[culture.tipo] || iconByType.other}
-                  </svg>
-                </div>
-                <div className="culture-info">
-                  <h3 className="culture-name">{culture.nome}</h3>
-                  <span className="culture-scientific">{culture.nomeCientifico}</span>
-                </div>
-                <div className={`culture-status culture-status--${culture.status === 'ativa' ? 'active' : 'inactive'}`}>
-                  {formatStatus(culture.status)}
-                </div>
-              </div>
-
-              <div className="culture-stats">
-                <div className="stat-item">
-                  <span className="stat-label">Área Plantada</span>
-                  <span className="stat-value">{culture.area} ha</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">Talhões</span>
-                  <span className="stat-value">{culture.talhoes}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">Próxima Colheita</span>
-                  <span className="stat-value">{culture.diasColheita} dias</span>
-                </div>
-              </div>
-
-              <div className="culture-progress">
-                <div className="progress-header">
-                  <span className="progress-label">Desenvolvimento</span>
-                  <span className="progress-value">{culture.desenvolvimento}%</span>
-                </div>
-                <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${culture.desenvolvimento}%` }} />
-                </div>
-              </div>
-
-              <div className="culture-actions">
-                <button className="btn btn--outline btn--sm" onClick={() => view(culture)}>
-                  Ver Detalhes
-                </button>
-                <button className="btn btn--outline btn--sm" onClick={() => manage(culture)}>
-                  Gerenciar
-                </button>
-                <button className="btn btn--outline btn--sm btn--danger" onClick={() => remove(culture.id)}>
-                  Excluir
-                </button>
-              </div>
+          {isLoading ? (
+            <article className="culture-card">
+              <p>Carregando culturas...</p>
             </article>
-          ))}
+          ) : (
+            cultures.map((culture) => (
+              <article className="culture-card" key={culture.id}>
+                <div className="culture-card__header">
+                  <div className={`culture-icon culture-icon--${culture.tipo}`}>
+                    <svg viewBox="0 0 24 24" fill="none">
+                      {iconByType[culture.tipo] || iconByType.other}
+                    </svg>
+                  </div>
+                  <div className="culture-info">
+                    <h3 className="culture-name">{culture.nome}</h3>
+                    <span className="culture-scientific">{culture.nomeCientifico}</span>
+                  </div>
+                  <div className={`culture-status culture-status--${culture.status === 'ativa' ? 'active' : 'inactive'}`}>
+                    {formatStatus(culture.status)}
+                  </div>
+                </div>
+
+                <div className="culture-stats">
+                  <div className="stat-item">
+                    <span className="stat-label">Área Plantada</span>
+                    <span className="stat-value">{culture.area} ha</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Talhões</span>
+                    <span className="stat-value">{culture.talhoes}</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Próxima Colheita</span>
+                    <span className="stat-value">{culture.diasColheita} dias</span>
+                  </div>
+                </div>
+
+                <div className="culture-progress">
+                  <div className="progress-header">
+                    <span className="progress-label">Desenvolvimento</span>
+                    <span className="progress-value">{culture.desenvolvimento}%</span>
+                  </div>
+                  <div className="progress-bar">
+                    <div className="progress-fill" style={{ width: `${culture.desenvolvimento}%` }} />
+                  </div>
+                </div>
+
+                <div className="culture-actions">
+                  <button className="btn btn--outline btn--sm" onClick={() => view(culture)}>
+                    Ver Detalhes
+                  </button>
+                  <button className="btn btn--outline btn--sm" onClick={() => manage(culture)}>
+                    Gerenciar
+                  </button>
+                  <button className="btn btn--outline btn--sm btn--danger" onClick={() => remove(culture.id)}>
+                    Excluir
+                  </button>
+                </div>
+              </article>
+            ))
+          )}
         </section>
 
         <section className="culture-summary">
