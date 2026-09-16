@@ -114,6 +114,7 @@ export default function Culturas() {
   const [cultures, setCultures] = useState<Culture[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [form, setForm] = useState(emptyForm)
+  const [editingId, setEditingId] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -142,11 +143,13 @@ export default function Culturas() {
 
   const open = () => {
     setForm(emptyForm)
+    setEditingId(null)
     setIsOpen(true)
   }
 
   const close = () => {
     setIsOpen(false)
+    setEditingId(null)
   }
 
   const submit = async (e: React.FormEvent) => {
@@ -162,14 +165,16 @@ export default function Culturas() {
       status: form.status,
     }
     try {
-      const res = await fetch(`${API_URL}/culturas`, {
-        method: 'POST',
+      const res = await fetch(editingId ? `${API_URL}/culturas/${editingId}` : `${API_URL}/culturas`, {
+        method: editingId ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
       if (!res.ok) throw new Error('Erro ao salvar cultura')
       const saved: CulturaApi = await res.json()
-      setCultures((prev) => [...prev, toCulture(saved)])
+      setCultures((prev) =>
+        editingId ? prev.map((c) => (c.id === editingId ? toCulture(saved) : c)) : [...prev, toCulture(saved)],
+      )
       setForm(emptyForm)
       close()
     } catch (err) {
@@ -195,7 +200,18 @@ export default function Culturas() {
   }
 
   const manage = (c: Culture) => {
-    alert(`Gerenciar cultura: ${c.nome}\n\nFuncionalidade de gerenciamento será implementada em breve.`)
+    setForm({
+      nome: c.nome,
+      nomeCientifico: c.nomeCientifico,
+      tipo: c.tipo,
+      area: String(c.area),
+      talhoes: String(c.talhoes),
+      diasColheita: String(c.diasColheita),
+      desenvolvimento: c.desenvolvimento,
+      status: c.status,
+    })
+    setEditingId(c.id)
+    setIsOpen(true)
   }
 
   return (
@@ -319,7 +335,7 @@ export default function Culturas() {
           <div className="modal__overlay" onClick={close} />
           <div className="modal__content">
             <div className="modal__header">
-              <h2 className="modal__title">Cadastrar Nova Cultura</h2>
+              <h2 className="modal__title">{editingId ? 'Editar Cultura' : 'Cadastrar Nova Cultura'}</h2>
               <button className="modal__close" onClick={close} aria-label="Fechar modal">
                 <svg viewBox="0 0 20 20" fill="none">
                   <path d="M4 4l12 12M4 16L16 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -458,7 +474,7 @@ export default function Culturas() {
                 Cancelar
               </button>
               <button className="btn btn--primary" onClick={submit}>
-                Cadastrar Cultura
+                {editingId ? 'Salvar Alterações' : 'Cadastrar Cultura'}
               </button>
             </div>
           </div>
