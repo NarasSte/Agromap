@@ -115,6 +115,7 @@ export default function Culturas() {
   const [isOpen, setIsOpen] = useState(false)
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState<number | null>(null)
+  const [isViewing, setIsViewing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -144,16 +145,19 @@ export default function Culturas() {
   const open = () => {
     setForm(emptyForm)
     setEditingId(null)
+    setIsViewing(false)
     setIsOpen(true)
   }
 
   const close = () => {
     setIsOpen(false)
     setEditingId(null)
+    setIsViewing(false)
   }
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (isViewing) return
     const payload = {
       nome: form.nome,
       nome_cientifico: form.nomeCientifico,
@@ -195,11 +199,7 @@ export default function Culturas() {
     }
   }
 
-  const view = (c: Culture) => {
-    alert(`Detalhes da cultura: ${c.nome}\n\nNome Científico: ${c.nomeCientifico}\nÁrea: ${c.area} ha\nTalhões: ${c.talhoes}\nDias para colheita: ${c.diasColheita} dias\nStatus: ${formatStatus(c.status)}`)
-  }
-
-  const manage = (c: Culture) => {
+  const fillForm = (c: Culture) => {
     setForm({
       nome: c.nome,
       nomeCientifico: c.nomeCientifico,
@@ -210,7 +210,19 @@ export default function Culturas() {
       desenvolvimento: c.desenvolvimento,
       status: c.status,
     })
+  }
+
+  const view = (c: Culture) => {
+    fillForm(c)
     setEditingId(c.id)
+    setIsViewing(true)
+    setIsOpen(true)
+  }
+
+  const manage = (c: Culture) => {
+    fillForm(c)
+    setEditingId(c.id)
+    setIsViewing(false)
     setIsOpen(true)
   }
 
@@ -335,7 +347,9 @@ export default function Culturas() {
           <div className="modal__overlay" onClick={close} />
           <div className="modal__content">
             <div className="modal__header">
-              <h2 className="modal__title">{editingId ? 'Editar Cultura' : 'Cadastrar Nova Cultura'}</h2>
+              <h2 className="modal__title">
+                {isViewing ? 'Detalhes da Cultura' : editingId ? 'Editar Cultura' : 'Cadastrar Nova Cultura'}
+              </h2>
               <button className="modal__close" onClick={close} aria-label="Fechar modal">
                 <svg viewBox="0 0 20 20" fill="none">
                   <path d="M4 4l12 12M4 16L16 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -353,6 +367,7 @@ export default function Culturas() {
                     className="form-input"
                     placeholder="Ex: Trigo"
                     required
+                    disabled={isViewing}
                     value={form.nome}
                     onChange={(e) => setForm({ ...form, nome: e.target.value })}
                   />
@@ -366,6 +381,7 @@ export default function Culturas() {
                     className="form-input"
                     placeholder="Ex: Triticum aestivum"
                     required
+                    disabled={isViewing}
                     value={form.nomeCientifico}
                     onChange={(e) => setForm({ ...form, nomeCientifico: e.target.value })}
                   />
@@ -377,6 +393,7 @@ export default function Culturas() {
                     id="tipo-cultura"
                     className="form-select"
                     required
+                    disabled={isViewing}
                     value={form.tipo}
                     onChange={(e) => setForm({ ...form, tipo: e.target.value })}
                   >
@@ -402,6 +419,7 @@ export default function Culturas() {
                     placeholder="100"
                     min="1"
                     required
+                    disabled={isViewing}
                     value={form.area}
                     onChange={(e) => setForm({ ...form, area: e.target.value })}
                   />
@@ -416,6 +434,7 @@ export default function Culturas() {
                     placeholder="5"
                     min="1"
                     required
+                    disabled={isViewing}
                     value={form.talhoes}
                     onChange={(e) => setForm({ ...form, talhoes: e.target.value })}
                   />
@@ -430,6 +449,7 @@ export default function Culturas() {
                     placeholder="30"
                     min="1"
                     required
+                    disabled={isViewing}
                     value={form.diasColheita}
                     onChange={(e) => setForm({ ...form, diasColheita: e.target.value })}
                   />
@@ -444,6 +464,7 @@ export default function Culturas() {
                       className="form-range-input"
                       min="0"
                       max="100"
+                      disabled={isViewing}
                       value={form.desenvolvimento}
                       onChange={(e) => setForm({ ...form, desenvolvimento: Number(e.target.value) })}
                     />
@@ -457,6 +478,7 @@ export default function Culturas() {
                     id="status-cultura"
                     className="form-select"
                     required
+                    disabled={isViewing}
                     value={form.status}
                     onChange={(e) => setForm({ ...form, status: e.target.value })}
                   >
@@ -471,11 +493,13 @@ export default function Culturas() {
 
             <div className="modal__actions">
               <button className="btn btn--outline" onClick={close}>
-                Cancelar
+                {isViewing ? 'Fechar' : 'Cancelar'}
               </button>
-              <button className="btn btn--primary" onClick={submit}>
-                {editingId ? 'Salvar Alterações' : 'Cadastrar Cultura'}
-              </button>
+              {!isViewing && (
+                <button className="btn btn--primary" onClick={submit}>
+                  {editingId ? 'Salvar Alterações' : 'Cadastrar Cultura'}
+                </button>
+              )}
             </div>
           </div>
         </div>
