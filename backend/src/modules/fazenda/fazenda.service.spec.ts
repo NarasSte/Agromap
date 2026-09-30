@@ -4,6 +4,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FazendaService } from './fazenda.service';
 import { Fazenda } from '../../entities/fazenda.entity';
+import { Infraestrutura } from '../../entities/infraestrutura.entity';
+import { FazendaInfraestrutura } from '../../entities/fazenda-infraestrutura.entity';
 
 describe('FazendaService', () => {
   let service: FazendaService;
@@ -26,6 +28,20 @@ describe('FazendaService', () => {
             remove: jest.fn(),
           },
         },
+        {
+          provide: getRepositoryToken(Infraestrutura),
+          useValue: {
+            find: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(FazendaInfraestrutura),
+          useValue: {
+            create: jest.fn(),
+            save: jest.fn(),
+            delete: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -36,6 +52,7 @@ describe('FazendaService', () => {
   it('creates and persists a fazenda', async () => {
     repository.create.mockReturnValue(fazenda);
     repository.save.mockResolvedValue(fazenda);
+    repository.findOne.mockResolvedValue(fazenda);
 
     await expect(service.create({ nome: 'Fazenda Boa Vista' })).resolves.toEqual(fazenda);
     expect(repository.save).toHaveBeenCalledWith(fazenda);
@@ -60,7 +77,7 @@ describe('FazendaService', () => {
     repository.findOne.mockResolvedValue(fazenda);
     repository.save.mockResolvedValue(updated);
 
-    await expect(service.update(1, { cidade: 'Uberaba' })).resolves.toEqual(updated);
+    await expect(service.update(1, { cidade: 'Uberaba' })).resolves.toEqual(fazenda);
     expect(repository.merge).toHaveBeenCalledWith(fazenda, { cidade: 'Uberaba' });
   });
 });

@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } from 'typeorm';
+import { FazendaInfraestrutura } from './fazenda-infraestrutura.entity';
 
 @Entity('fazenda')
 export class Fazenda {
@@ -55,4 +56,16 @@ export class Fazenda {
 
   @Column({ nullable: true })
   numero: number;
+
+  @Column({ length: 60, nullable: true })
+  car: string;
+
+  @Column({ length: 20, nullable: true })
+  nirf_incra: string;
+
+  @Column({ nullable: true })
+  altitude_metros: number;
+
+  @OneToMany(() => FazendaInfraestrutura, (fi) => fi.fazenda)
+  infraestruturas: FazendaInfraestrutura[];
 }

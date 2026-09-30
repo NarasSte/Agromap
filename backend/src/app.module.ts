@@ -22,6 +22,8 @@ import { ManutencaoEquipamentoModule } from './modules/manutencao-equipamento/ma
 import { UsoEquipamentoModule } from './modules/uso-equipamento/uso-equipamento.module';
 import { TalhaoSoloModule } from './modules/talhao-solo/talhao-solo.module';
 import { RecomendacaoClimaModule } from './modules/recomendacao-clima/recomendacao-clima.module';
+import { InfraestruturaModule } from './modules/infraestrutura/infraestrutura.module';
+import { FazendaInfraestruturaModule } from './modules/fazenda-infraestrutura/fazenda-infraestrutura.module';
 
 // Entities
 import { Fazenda } from './entities/fazenda.entity';
@@ -43,8 +45,11 @@ import { ManutencaoEquipamento } from './entities/manutencao-equipamento.entity'
 import { UsoEquipamento } from './entities/uso-equipamento.entity';
 import { TalhaoSolo } from './entities/talhao-solo.entity';
 import { RecomendacaoClima } from './entities/recomendacao-clima.entity';
+import { Infraestrutura } from './entities/infraestrutura.entity';
+import { FazendaInfraestrutura } from './entities/fazenda-infraestrutura.entity';
 
 import { AddCulturaColumns1788378529051 } from './migrations/1788378529051-AddCulturaColumns';
+import { AddFazendaCadastroFieldsAndInfraestrutura1790796560575 } from './migrations/1790796560575-AddFazendaCadastroFieldsAndInfraestrutura';
 
 @Module({
   imports: [
@@ -80,9 +85,11 @@ import { AddCulturaColumns1788378529051 } from './migrations/1788378529051-AddCu
           UsoEquipamento,
           TalhaoSolo,
           RecomendacaoClima,
+          Infraestrutura,
+          FazendaInfraestrutura,
         ],
         synchronize: false,
-        migrations: [AddCulturaColumns1788378529051],
+        migrations: [AddCulturaColumns1788378529051, AddFazendaCadastroFieldsAndInfraestrutura1790796560575],
         migrationsRun: true,
         logging: true,
       }),
@@ -107,6 +114,8 @@ import { AddCulturaColumns1788378529051 } from './migrations/1788378529051-AddCu
     UsoEquipamentoModule,
     TalhaoSoloModule,
     RecomendacaoClimaModule,
+    InfraestruturaModule,
+    FazendaInfraestruturaModule,
   ],
 })
 export class AppModule {}

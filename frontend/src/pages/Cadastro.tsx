@@ -3,6 +3,8 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import '../cadastro.css'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+
 /* ══════════════════════════════════════════════════
    BASE DE DADOS DE CULTURAS E REGIÕES SP
    (Fonte: IAC - Instituto Agronômico de Campinas,
@@ -563,12 +565,40 @@ export default function Cadastro() {
   ══════════════════════════════════════════════════ */
   const canSubmit = !!(nome.trim() && email.trim() && fazenda.trim() && coords.lat !== null && selectedCulturas.length > 0)
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (!canSubmit) return
     showLoader('Cadastrando sua propriedade...')
-    setTimeout(() => {
+    try {
+      const res = await fetch(`${API_URL}/fazendas`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: fazenda.trim(),
+          proprietario_nome: nome.trim(),
+          documento: cpf.trim() || undefined,
+          email: email.trim(),
+          telefone: tel.trim() || undefined,
+          car: car.trim() || undefined,
+          nirf_incra: nirf.trim() || undefined,
+          area_total_hectares: area,
+          cidade: municipio || undefined,
+          estado: 'SP',
+          latitude: coords.lat,
+          longitude: coords.lon,
+          altitude_metros: coords.alt !== null ? Math.round(coords.alt) : undefined,
+          infraestruturas: selectedInfra,
+        }),
+      })
       hideLoader()
+      if (!res.ok) {
+        showToast('❌ Erro ao cadastrar a propriedade. Verifique os dados e tente novamente.')
+        return
+      }
       showToast(`✅ Propriedade "${fazenda.trim()}" de ${nome.trim()} cadastrada com sucesso!`)
-    }, 1800)
+    } catch {
+      hideLoader()
+      showToast('❌ Não foi possível conectar ao servidor. Verifique se o backend está rodando.')
+    }
   }
 
   /* ═══════════ RENDER ═══════════ */
