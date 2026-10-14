@@ -1,13 +1,14 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { FazendaService } from './fazenda.service';
-import { Fazenda } from '../../entities/fazenda.entity';
+import { CreateFazendaDto } from './dto/create-fazenda.dto';
+import { UpdateFazendaDto } from './dto/update-fazenda.dto';
 
 @Controller('fazendas')
 export class FazendaController {
   constructor(private readonly fazendaService: FazendaService) {}
 
   @Post()
-  create(@Body() createFazendaDto: Partial<Fazenda>) {
+  create(@Body() createFazendaDto: CreateFazendaDto) {
     return this.fazendaService.create(createFazendaDto);
   }
 
@@ -22,7 +23,7 @@ export class FazendaController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateFazendaDto: Partial<Fazenda>) {
+  update(@Param('id') id: string, @Body() updateFazendaDto: UpdateFazendaDto) {
     return this.fazendaService.update(+id, updateFazendaDto);
   }
 
