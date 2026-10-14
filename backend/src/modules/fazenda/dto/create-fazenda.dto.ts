@@ -81,4 +81,9 @@ export class CreateFazendaDto {
   @IsArray()
   @IsString({ each: true })
   infraestruturas?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  culturas?: string[];
 }

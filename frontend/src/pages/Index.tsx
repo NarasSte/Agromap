@@ -165,6 +165,7 @@ export default function Index() {
         <div className="hub-footer-links">
           <a href="/culturas">Culturas</a>
           <a href="/cadastro">Cadastro SP</a>
+          <a href="/fazendas">Fazendas</a>
         </div>
       </footer>
     </>

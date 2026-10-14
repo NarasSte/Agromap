@@ -6,6 +6,7 @@ import { FazendaService } from './fazenda.service';
 import { Fazenda } from '../../entities/fazenda.entity';
 import { Infraestrutura } from '../../entities/infraestrutura.entity';
 import { FazendaInfraestrutura } from '../../entities/fazenda-infraestrutura.entity';
+import { FazendaCultura } from '../../entities/fazenda-cultura.entity';
 
 describe('FazendaService', () => {
   let service: FazendaService;
@@ -36,6 +37,14 @@ describe('FazendaService', () => {
         },
         {
           provide: getRepositoryToken(FazendaInfraestrutura),
+          useValue: {
+            create: jest.fn(),
+            save: jest.fn(),
+            delete: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(FazendaCultura),
           useValue: {
             create: jest.fn(),
             save: jest.fn(),
