@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } from 'typeorm';
 import { FazendaInfraestrutura } from './fazenda-infraestrutura.entity';
+import { FazendaCultura } from './fazenda-cultura.entity';
 
 @Entity('fazenda')
 export class Fazenda {
@@ -68,4 +69,7 @@ export class Fazenda {
 
   @OneToMany(() => FazendaInfraestrutura, (fi) => fi.fazenda)
   infraestruturas: FazendaInfraestrutura[];
+
+  @OneToMany(() => FazendaCultura, (fc) => fc.fazenda)
+  culturas: FazendaCultura[];
 }

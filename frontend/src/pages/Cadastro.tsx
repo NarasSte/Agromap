@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import '../cadastro.css'
@@ -12,7 +13,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
     IEA - Instituto de Economia Agrícola de SP)
 ══════════════════════════════════════════════════ */
 
-const CULTURAS = [
+export const CULTURAS = [
   { id: 'soja', emoji: '🌱', nome: 'Soja', ciclo: '90–130 dias', key: 'soja' },
   { id: 'milho', emoji: '🌽', nome: 'Milho', ciclo: '110–150 dias', key: 'milho' },
   { id: 'cana', emoji: '🎋', nome: 'Cana-de-açúcar', ciclo: '12–18 meses', key: 'cana' },
@@ -27,7 +28,7 @@ const CULTURAS = [
   { id: 'amendoim', emoji: '🥜', nome: 'Amendoim', ciclo: '90–130 dias', key: 'amendoim' },
 ]
 
-const INFRA = [
+export const INFRA = [
   { id: 'irrigacao', emoji: '💧', nome: 'Irrigação' },
   { id: 'armazem', emoji: '🏚', nome: 'Armazém' },
   { id: 'maquinas', emoji: '🚜', nome: 'Maquinário' },
@@ -292,6 +293,7 @@ type ResultView =
   | { type: 'out'; lat: number; lon: number }
 
 export default function Cadastro() {
+  const navigate = useNavigate()
   const mapEl = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const markerRef = useRef<L.Marker | null>(null)
@@ -587,6 +589,7 @@ export default function Cadastro() {
           longitude: coords.lon,
           altitude_metros: coords.alt !== null ? Math.round(coords.alt) : undefined,
           infraestruturas: selectedInfra,
+          culturas: selectedCulturas,
         }),
       })
       hideLoader()
@@ -594,7 +597,8 @@ export default function Cadastro() {
         showToast('❌ Erro ao cadastrar a propriedade. Verifique os dados e tente novamente.')
         return
       }
-      showToast(`✅ Propriedade "${fazenda.trim()}" de ${nome.trim()} cadastrada com sucesso!`)
+      const created: { id: number } = await res.json()
+      navigate(`/fazenda/${created.id}`, { state: { fazenda: created } })
     } catch {
       hideLoader()
       showToast('❌ Não foi possível conectar ao servidor. Verifique se o backend está rodando.')

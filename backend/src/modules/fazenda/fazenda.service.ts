@@ -4,6 +4,7 @@ import { In, Repository } from 'typeorm';
 import { Fazenda } from '../../entities/fazenda.entity';
 import { Infraestrutura } from '../../entities/infraestrutura.entity';
 import { FazendaInfraestrutura } from '../../entities/fazenda-infraestrutura.entity';
+import { FazendaCultura } from '../../entities/fazenda-cultura.entity';
 import { CreateFazendaDto } from './dto/create-fazenda.dto';
 import { UpdateFazendaDto } from './dto/update-fazenda.dto';
 
@@ -16,6 +17,8 @@ export class FazendaService {
     private readonly infraestruturaRepository: Repository<Infraestrutura>,
     @InjectRepository(FazendaInfraestrutura)
     private readonly fazendaInfraestruturaRepository: Repository<FazendaInfraestrutura>,
+    @InjectRepository(FazendaCultura)
+    private readonly fazendaCulturaRepository: Repository<FazendaCultura>,
   ) {}
 
   private async syncInfraestruturas(fazendaId: number, codigos: string[]): Promise<void> {
@@ -33,25 +36,37 @@ export class FazendaService {
     await this.fazendaInfraestruturaRepository.save(vinculos);
   }
 
+  private async syncCulturas(fazendaId: number, codigos: string[]): Promise<void> {
+    await this.fazendaCulturaRepository.delete({ fazenda_id: fazendaId });
+    if (!codigos.length) return;
+    const vinculos = codigos.map((codigo) =>
+      this.fazendaCulturaRepository.create({ fazenda_id: fazendaId, codigo }),
+    );
+    await this.fazendaCulturaRepository.save(vinculos);
+  }
+
   async create(createFazendaDto: CreateFazendaDto): Promise<Fazenda> {
-    const { infraestruturas, ...data } = createFazendaDto;
+    const { infraestruturas, culturas, ...data } = createFazendaDto;
     const fazenda = await this.fazendaRepository.save(this.fazendaRepository.create(data));
     if (infraestruturas?.length) {
       await this.syncInfraestruturas(fazenda.id, infraestruturas);
+    }
+    if (culturas?.length) {
+      await this.syncCulturas(fazenda.id, culturas);
     }
     return this.findOne(fazenda.id);
   }
 
   async findAll(): Promise<Fazenda[]> {
     return await this.fazendaRepository.find({
-      relations: { infraestruturas: { infraestrutura: true } },
+      relations: { infraestruturas: { infraestrutura: true }, culturas: true },
     });
   }
 
   async findOne(id: number): Promise<Fazenda> {
     const fazenda = await this.fazendaRepository.findOne({
       where: { id },
-      relations: { infraestruturas: { infraestrutura: true } },
+      relations: { infraestruturas: { infraestrutura: true }, culturas: true },
     });
     if (!fazenda) {
       throw new NotFoundException(`Fazenda with ID ${id} not found`);
@@ -60,12 +75,15 @@ export class FazendaService {
   }
 
   async update(id: number, updateFazendaDto: UpdateFazendaDto): Promise<Fazenda> {
-    const { infraestruturas, ...data } = updateFazendaDto;
+    const { infraestruturas, culturas, ...data } = updateFazendaDto;
     const fazenda = await this.findOne(id);
     this.fazendaRepository.merge(fazenda, data);
     await this.fazendaRepository.save(fazenda);
     if (infraestruturas !== undefined) {
       await this.syncInfraestruturas(id, infraestruturas);
+    }
+    if (culturas !== undefined) {
+      await this.syncCulturas(id, culturas);
     }
     return this.findOne(id);
   }

@@ -47,9 +47,11 @@ import { TalhaoSolo } from './entities/talhao-solo.entity';
 import { RecomendacaoClima } from './entities/recomendacao-clima.entity';
 import { Infraestrutura } from './entities/infraestrutura.entity';
 import { FazendaInfraestrutura } from './entities/fazenda-infraestrutura.entity';
+import { FazendaCultura } from './entities/fazenda-cultura.entity';
 
 import { AddCulturaColumns1788378529051 } from './migrations/1788378529051-AddCulturaColumns';
 import { AddFazendaCadastroFieldsAndInfraestrutura1790796560575 } from './migrations/1790796560575-AddFazendaCadastroFieldsAndInfraestrutura';
+import { AddFazendaCultura1791936000000 } from './migrations/1791936000000-AddFazendaCultura';
 
 @Module({
   imports: [
@@ -87,9 +89,14 @@ import { AddFazendaCadastroFieldsAndInfraestrutura1790796560575 } from './migrat
           RecomendacaoClima,
           Infraestrutura,
           FazendaInfraestrutura,
+          FazendaCultura,
         ],
         synchronize: false,
-        migrations: [AddCulturaColumns1788378529051, AddFazendaCadastroFieldsAndInfraestrutura1790796560575],
+        migrations: [
+          AddCulturaColumns1788378529051,
+          AddFazendaCadastroFieldsAndInfraestrutura1790796560575,
+          AddFazendaCultura1791936000000,
+        ],
         migrationsRun: true,
         logging: true,
       }),

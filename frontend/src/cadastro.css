@@ -264,6 +264,7 @@
 .cadastro-page .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(61,214,140,.35); }
 .cadastro-page .btn-submit:active { transform: translateY(0); }
 .cadastro-page .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.cadastro-page a.btn-submit { text-decoration: none; }
 
 .cadastro-page .btn-gps {
   background: var(--accent-blue-dim); border: 1px solid rgba(74,158,255,.3);
@@ -512,8 +513,129 @@
 .cadastro-page .soil-mini-val { font-size: .85rem; font-weight: 700; color: var(--text-primary); }
 .cadastro-page .soil-mini-val span { font-size: .65rem; font-weight: 400; color: var(--text-muted); margin-left: 2px; }
 
+/* ══════════════════════════════════════════
+   CONFIRMAÇÃO — DETALHES DA FAZENDA
+══════════════════════════════════════════ */
+.cadastro-page .confirm-banner {
+  background: var(--accent-green-dim);
+  border: 1px solid rgba(61,214,140,.3);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 12px;
+}
+.cadastro-page .confirm-banner-icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--accent-green); color: var(--text-inverted);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 700; flex-shrink: 0;
+  box-shadow: 0 0 16px var(--accent-green-glow);
+}
+.cadastro-page .confirm-banner-title { font-size: .95rem; font-weight: 700; color: var(--accent-green); }
+.cadastro-page .confirm-banner-sub { font-size: .76rem; color: var(--text-secondary); }
+
+.cadastro-page .confirm-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -.02em; }
+.cadastro-page .confirm-sub { font-size: .78rem; color: var(--text-muted); }
+
+.cadastro-page .detail-val {
+  font-size: .9rem; font-weight: 600; color: var(--text-primary);
+  word-break: break-word;
+}
+.cadastro-page .detail-val--mono { font-family: var(--font-mono); font-size: .82rem; font-weight: 500; }
+.cadastro-page .detail-val--empty { color: var(--text-muted); font-weight: 400; }
+
+.cadastro-page .infra-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.cadastro-page .infra-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent-green-dim);
+  border: 1px solid rgba(61,214,140,.25);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-size: .74rem; font-weight: 600; color: var(--accent-green);
+}
+.cadastro-page .infra-chip-emoji { font-size: .95rem; }
+.cadastro-page .empty-note { font-size: .76rem; color: var(--text-muted); }
+
+.cadastro-page .confirm-actions { gap: 10px; }
+.cadastro-page .btn-outline {
+  background: transparent; border: 1px solid var(--border-default);
+  color: var(--text-secondary); border-radius: var(--radius-lg);
+  padding: 12px 20px; font-family: var(--font-body); font-size: .85rem;
+  font-weight: 600; cursor: pointer; width: 100%; text-decoration: none;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all .2s var(--ease);
+}
+.cadastro-page .btn-outline:hover { border-color: var(--accent-green); color: var(--accent-green); }
+.cadastro-page .confirm-back {
+  font-size: .74rem; color: var(--text-muted); text-decoration: none;
+  text-align: center; transition: color .15s;
+}
+.cadastro-page .confirm-back:hover { color: var(--text-secondary); }
+
+/* ══════════════════════════════════════════
+   LISTAGEM DE FAZENDAS
+══════════════════════════════════════════ */
+.cadastro-page a.topbar-login { text-decoration: none; display: inline-flex; align-items: center; }
+.cadastro-page .fazendas-wrap {
+  padding: 32px 40px 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+.cadastro-page .fazendas-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; margin-bottom: 22px; flex-wrap: wrap;
+}
+.cadastro-page .fazendas-title { font-size: 1.45rem; font-weight: 700; letter-spacing: -.02em; }
+.cadastro-page .fazendas-sub { font-size: .8rem; color: var(--text-secondary); margin-top: 4px; }
+
+.cadastro-page .fazendas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+.cadastro-page .fazenda-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  display: flex; flex-direction: column; gap: 12px;
+  text-decoration: none; color: var(--text-primary);
+  transition: transform .2s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.cadastro-page .fazenda-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-green);
+  box-shadow: 0 8px 24px rgba(0,0,0,.3);
+}
+.cadastro-page .fazenda-card-top {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+}
+.cadastro-page .fazenda-card-name { font-size: 1.05rem; font-weight: 700; letter-spacing: -.01em; }
+.cadastro-page .fazenda-card-owner { font-size: .76rem; color: var(--text-secondary); margin-top: 2px; }
+.cadastro-page .fazenda-card-loc {
+  font-size: .74rem; color: var(--text-muted);
+  display: flex; align-items: center; gap: 5px;
+}
+.cadastro-page .fazenda-card-stats {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  padding-top: 12px; border-top: 1px solid var(--border-subtle);
+}
+.cadastro-page .fazenda-card-stat { display: flex; flex-direction: column; gap: 1px; }
+.cadastro-page .fazenda-card-stat-label {
+  font-size: .6rem; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--text-muted); font-weight: 600;
+}
+.cadastro-page .fazenda-card-stat-val { font-size: .82rem; font-weight: 600; color: var(--text-primary); }
+.cadastro-page .fazenda-card-cta {
+  font-size: .78rem; font-weight: 600; color: var(--accent-green);
+  display: flex; align-items: center; gap: 6px; margin-top: auto;
+}
+.cadastro-page .fazenda-card-cta svg { transition: transform .2s var(--ease); }
+.cadastro-page .fazenda-card:hover .fazenda-card-cta svg { transform: translateX(3px); }
+
 @media (max-width: 900px) {
   .cadastro-page .page-wrap { grid-template-columns: 1fr; }
   .cadastro-page .map-col { min-height: 60vh; }
   .cadastro-page #map { height: 45vh; }
+  .cadastro-page .fazendas-wrap { padding: 24px 20px 40px; }
 }
