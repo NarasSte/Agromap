@@ -4,8 +4,8 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import '../cadastro.css'
 import { CULTURAS, INFRA } from './Cadastro'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+import { useAuth, useAuthFetch } from '../auth'
+import UserMenu from '../components/UserMenu'
 
 const TILES = {
   standard: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attr: '© <a href="https://openstreetmap.org">OSM</a>' },
@@ -70,6 +70,9 @@ function DetailField({ label, value, mono }: { label: string; value?: string | n
 export default function Fazenda() {
   const { id } = useParams()
   const location = useLocation()
+  const { usuario } = useAuth()
+  const authFetch = useAuthFetch()
+  const isAdmin = usuario?.tipo === 'admin'
   const stateFazenda = (location.state as { fazenda?: FazendaData } | null)?.fazenda ?? null
 
   const mapEl = useRef<HTMLDivElement>(null)
@@ -91,7 +94,7 @@ export default function Fazenda() {
   useEffect(() => {
     if (fazenda || !id) return
     let cancelled = false
-    fetch(`${API_URL}/fazendas/${id}`)
+    authFetch(`/fazendas/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error('Erro ao carregar fazenda')
         return res.json()
@@ -108,7 +111,7 @@ export default function Fazenda() {
     return () => {
       cancelled = true
     }
-  }, [id, fazenda])
+  }, [id, fazenda, authFetch])
 
   /* ══════════════════════════════════════════════════
      MAPA (somente leitura)
@@ -215,7 +218,7 @@ export default function Fazenda() {
               <span className="step-label active">Confirmação</span>
             </div>
           </div>
-          <button className="topbar-login">Já tenho conta</button>
+          <UserMenu />
         </div>
       </header>
 
@@ -386,8 +389,12 @@ export default function Fazenda() {
                   <svg viewBox="0 0 16 16" fill="none" style={{ width: '15px', height: '15px' }}><path d="M2 8h12M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   Ir para o painel de culturas
                 </Link>
-                <Link to="/cadastro" className="btn-outline">Cadastrar nova propriedade</Link>
-                <Link to="/fazendas" className="btn-outline">Ver todas as fazendas</Link>
+                {isAdmin && (
+                  <>
+                    <Link to="/cadastro" className="btn-outline">Cadastrar nova propriedade</Link>
+                    <Link to="/fazendas" className="btn-outline">Ver todas as fazendas</Link>
+                  </>
+                )}
                 <Link to="/" className="confirm-back">← Voltar ao início</Link>
               </div>
             </>

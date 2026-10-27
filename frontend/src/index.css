@@ -357,3 +357,19 @@ body {
     padding-right: 22px;
   }
 }
+
+.hub-topbar-login {
+  margin-left: auto;
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  padding: 6px 16px;
+  font-size: .8rem;
+  text-decoration: none;
+  transition: all .15s var(--ease);
+}
+
+.hub-topbar-login:hover {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}

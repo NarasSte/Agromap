@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import '../cadastro.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+import { API_URL, useAuth } from '../auth'
 
 /* ══════════════════════════════════════════════════
    BASE DE DADOS DE CULTURAS E REGIÕES SP
@@ -294,6 +293,7 @@ type ResultView =
 
 export default function Cadastro() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const mapEl = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const markerRef = useRef<L.Marker | null>(null)
@@ -304,6 +304,8 @@ export default function Cadastro() {
   const [cpf, setCpf] = useState('')
   const [email, setEmail] = useState('')
   const [tel, setTel] = useState('')
+  const [senha, setSenha] = useState('')
+  const [senhaConfirm, setSenhaConfirm] = useState('')
   const [fazenda, setFazenda] = useState('')
   const [car, setCar] = useState('')
   const [nirf, setNirf] = useState('')
@@ -565,7 +567,8 @@ export default function Cadastro() {
   /* ══════════════════════════════════════════════════
      SUBMIT
   ══════════════════════════════════════════════════ */
-  const canSubmit = !!(nome.trim() && email.trim() && fazenda.trim() && coords.lat !== null && selectedCulturas.length > 0)
+  const senhaValida = senha.length >= 6 && senha === senhaConfirm
+  const canSubmit = !!(nome.trim() && email.trim() && senhaValida && fazenda.trim() && coords.lat !== null && selectedCulturas.length > 0)
 
   const handleSubmit = async () => {
     if (!canSubmit) return
@@ -590,14 +593,21 @@ export default function Cadastro() {
           altitude_metros: coords.alt !== null ? Math.round(coords.alt) : undefined,
           infraestruturas: selectedInfra,
           culturas: selectedCulturas,
+          senha,
         }),
       })
-      hideLoader()
       if (!res.ok) {
-        showToast('❌ Erro ao cadastrar a propriedade. Verifique os dados e tente novamente.')
+        hideLoader()
+        showToast(
+          res.status === 409
+            ? '❌ Já existe um usuário cadastrado com este e-mail.'
+            : '❌ Erro ao cadastrar a propriedade. Verifique os dados e tente novamente.',
+        )
         return
       }
       const created: { id: number } = await res.json()
+      await login(email.trim(), senha)
+      hideLoader()
       navigate(`/fazenda/${created.id}`, { state: { fazenda: created } })
     } catch {
       hideLoader()
@@ -745,7 +755,7 @@ export default function Cadastro() {
               <span className="step-label" id="step3-lbl">Confirmação</span>
             </div>
           </div>
-          <button className="topbar-login">Já tenho conta</button>
+          <Link to="/login" className="topbar-login">Já tenho conta</Link>
         </div>
       </header>
 
@@ -790,6 +800,17 @@ export default function Cadastro() {
               <div className="form-group">
                 <label className="form-label">Telefone</label>
                 <input type="tel" className="form-input form-input--mono" id="f-tel" placeholder="(11) 99000-0000" value={tel} onChange={(e) => setTel(e.target.value)} />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">Senha de acesso <span className="required-dot" /></label>
+                <input type="password" className="form-input" id="f-senha" placeholder="Mínimo 6 caracteres" autoComplete="new-password" value={senha} onChange={(e) => setSenha(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Confirmar senha <span className="required-dot" /></label>
+                <input type="password" className="form-input" id="f-senha-confirm" placeholder="Repita a senha" autoComplete="new-password" value={senhaConfirm} onChange={(e) => setSenhaConfirm(e.target.value)} />
+                {senhaConfirm && senha !== senhaConfirm && <span className="form-hint">As senhas não conferem.</span>}
               </div>
             </div>
           </div>

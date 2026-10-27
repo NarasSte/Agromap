@@ -23,6 +23,7 @@ export default function Index() {
           Agro<strong>Map</strong>
         </span>
         <span className="hub-topbar-tag">Central de Acesso</span>
+        <a className="hub-topbar-login" href="/login">Entrar</a>
       </header>
 
       <section className="hub-hero">
@@ -166,6 +167,7 @@ export default function Index() {
           <a href="/culturas">Culturas</a>
           <a href="/cadastro">Cadastro SP</a>
           <a href="/fazendas">Fazendas</a>
+          <a href="/login">Entrar</a>
         </div>
       </footer>
     </>
