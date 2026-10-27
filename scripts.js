@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════
-// AGROMAP - JavaScript Functions
+// AGROMAP - JavaScript Functions (Corrigido)
 // ══════════════════════════════════════════════
 
 // LocalStorage Management
@@ -58,52 +58,51 @@ function getDefaultCultures() {
 // Modal functionality
 function openModal() {
   const modal = document.getElementById('modal-nova-cultura');
-  modal.classList.remove('modal--hidden');
-  document.body.style.overflow = 'hidden';
+  if (modal) {
+    modal.classList.remove('modal--hidden');
+    document.body.style.overflow = 'hidden';
+  }
 }
 
 function closeModal() {
   const modal = document.getElementById('modal-nova-cultura');
-  modal.classList.add('modal--hidden');
-  document.body.style.overflow = '';
-  // Reset form
-  document.querySelector('.modal__form').reset();
-  document.querySelector('.form-range-value').textContent = '0%';
+  if (modal) {
+    modal.classList.add('modal--hidden');
+    document.body.style.overflow = '';
+    const form = document.querySelector('.modal__form');
+    if (form) form.reset();
+    const rangeVal = document.querySelector('.form-range-value');
+    if (rangeVal) rangeVal.textContent = '0%';
+  }
 }
 
 function updateRangeValue(input) {
   const value = input.value;
-  input.nextElementSibling.textContent = value + '%';
+  const nextEl = input.nextElementSibling;
+  if (nextEl) nextEl.textContent = value + '%';
 }
 
 function saveCulture(event) {
   event.preventDefault();
   
-  // Get form values
   const formData = {
-    id: Date.now(), // Simple unique ID
-    nome: document.getElementById('nome-cultura').value,
-    nomeCientifico: document.getElementById('nome-cientifico').value,
-    tipo: document.getElementById('tipo-cultura').value,
-    area: parseInt(document.getElementById('area-plantada').value),
-    talhoes: parseInt(document.getElementById('num-talhoes').value),
-    diasColheita: parseInt(document.getElementById('dias-colheita').value),
-    desenvolvimento: parseInt(document.getElementById('desenvolvimento').value),
-    status: document.getElementById('status-cultura').value
+    id: Date.now(),
+    nome: document.getElementById('nome-cultura')?.value || '',
+    nomeCientifico: document.getElementById('nome-cientifico')?.value || '',
+    tipo: document.getElementById('tipo-cultura')?.value || 'other',
+    area: parseInt(document.getElementById('area-plantada')?.value) || 0,
+    talhoes: parseInt(document.getElementById('num-talhoes')?.value) || 0,
+    diasColheita: parseInt(document.getElementById('dias-colheita')?.value) || 0,
+    desenvolvimento: parseInt(document.getElementById('desenvolvimento')?.value) || 0,
+    status: document.getElementById('status-cultura')?.value || 'ativa'
   };
 
-  // Get existing cultures and add new one
   const cultures = getCultures();
   cultures.push(formData);
-  
-  // Save to localStorage
   saveCultures(cultures);
   
-  // Refresh display
   renderCultures();
   updateSummary();
-  
-  // Close modal
   closeModal();
 }
 
@@ -112,10 +111,10 @@ function renderCultures() {
   const cultures = getCultures();
   const grid = document.querySelector('.culture-grid');
   
-  // Clear existing content
+  if (!grid) return; // Se não estiver na página de culturas, sai da função sem quebrar
+  
   grid.innerHTML = '';
   
-  // Render each culture
   cultures.forEach(culture => {
     const card = createCultureCard(culture);
     grid.appendChild(card);
@@ -211,10 +210,10 @@ function updateSummary() {
 
   const summaryStats = document.querySelectorAll('.summary-stat');
   if (summaryStats.length >= 4) {
-    summaryStats[0].querySelector('.summary-value').textContent = activeCultures.length;
-    summaryStats[1].querySelector('.summary-value').textContent = totalArea + ' ha';
-    summaryStats[2].querySelector('.summary-value').textContent = totalTalhoes;
-    summaryStats[3].querySelector('.summary-value').textContent = avgDevelopment + '%';
+    if (summaryStats[0].querySelector('.summary-value')) summaryStats[0].querySelector('.summary-value').textContent = activeCultures.length;
+    if (summaryStats[1].querySelector('.summary-value')) summaryStats[1].querySelector('.summary-value').textContent = totalArea + ' ha';
+    if (summaryStats[2].querySelector('.summary-value')) summaryStats[2].querySelector('.summary-value').textContent = totalTalhoes;
+    if (summaryStats[3].querySelector('.summary-value')) summaryStats[3].querySelector('.summary-value').textContent = avgDevelopment + '%';
   }
 }
 
@@ -229,7 +228,7 @@ function deleteCulture(id) {
   }
 }
 
-// View culture details (placeholder)
+// View culture details
 function viewDetails(id) {
   const cultures = getCultures();
   const culture = cultures.find(c => c.id === id);
@@ -238,7 +237,7 @@ function viewDetails(id) {
   }
 }
 
-// Manage culture (placeholder)
+// Manage culture
 function manageCulture(id) {
   const cultures = getCultures();
   const culture = cultures.find(c => c.id === id);
@@ -249,27 +248,23 @@ function manageCulture(id) {
 
 // Initialize event listeners
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize cultures from localStorage
   renderCultures();
   updateSummary();
   
-  // Connect button to modal
   const novaCulturaBtn = document.querySelector('.btn--primary');
   if (novaCulturaBtn) {
     novaCulturaBtn.addEventListener('click', openModal);
   }
 
-  // Close modal when clicking on overlay
   const modalOverlay = document.querySelector('.modal__overlay');
   if (modalOverlay) {
     modalOverlay.addEventListener('click', closeModal);
   }
 
-  // Close modal when pressing Escape key
   document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
       const modal = document.getElementById('modal-nova-cultura');
-      if (!modal.classList.contains('modal--hidden')) {
+      if (modal && !modal.classList.contains('modal--hidden')) {
         closeModal();
       }
     }
