@@ -8,9 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    /* Tokens reaproveitados dos dois projetos originais (mesmos valores),
-       apenas para que esta página-ponte não destoe visualmente. Nenhum
-       arquivo de estilo original foi tocado — este bloco é local e novo. */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
@@ -53,7 +50,7 @@
       flex-direction: column;
     }
 
-    /* ─────────────── TOPO ─────────────── */
+    /* TOPO */
     .hub-topbar {
       display: flex; align-items: center; gap: 10px;
       padding: 22px 40px;
@@ -75,7 +72,7 @@
       text-transform: uppercase; color: var(--text-muted);
     }
 
-    /* ─────────────── HERO ─────────────── */
+    /* HERO */
     .hub-hero {
       padding: 64px 40px 32px;
       max-width: 880px;
@@ -98,7 +95,7 @@
       font-size: 1rem; color: var(--text-secondary); line-height: 1.6; max-width: 600px;
     }
 
-    /* ─────────────── PONTE VISUAL ─────────────── */
+    /* PONTE VISUAL */
     .bridge-wrap {
       padding: 8px 40px 8px;
       display: flex; justify-content: center;
@@ -109,7 +106,7 @@
     }
     .bridge-line svg { width: 100%; height: 100%; display: block; }
 
-    /* ─────────────── CARDS DE ACESSO ─────────────── */
+    /* CARDS DE ACESSO */
     .hub-main { flex: 1; padding: 8px 40px 64px; }
     .access-grid {
       max-width: 900px; margin: 0 auto;
@@ -136,7 +133,7 @@
       box-shadow: 0 12px 32px rgba(0,0,0,.35);
     }
     .access-card--culturas { --card-accent: var(--accent-green); --card-glow: var(--accent-green-glow); }
-    .access-card--sp       { --card-accent: var(--accent-blue);  --card-glow: var(--accent-blue-glow); }
+    .access-card--sp        { --card-accent: var(--accent-blue);  --card-glow: var(--accent-blue-glow); }
 
     .access-card-top {
       display: flex; align-items: center; justify-content: space-between;
@@ -173,7 +170,7 @@
     .access-card-cta svg { width: 14px; height: 14px; transition: transform .2s var(--ease); }
     .access-card:hover .access-card-cta svg { transform: translateX(3px); }
 
-    /* ─────────────── RODAPÉ ─────────────── */
+    /* RODAPÉ */
     .hub-footer {
       padding: 20px 40px; border-top: 1px solid var(--border-subtle);
       display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
@@ -191,7 +188,6 @@
 </head>
 <body>
 
-  <!-- ─────────────── TOPO ─────────────── -->
   <header class="hub-topbar">
     <div class="hub-topbar-icon">
       <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -214,7 +210,6 @@
     <span class="hub-topbar-tag">Central de Acesso</span>
   </header>
 
-  <!-- ─────────────── HERO ─────────────── -->
   <section class="hub-hero">
     <span class="hub-eyebrow"><span class="hub-eyebrow-dot"></span>2 sistemas · 1 ponto de entrada</span>
     <h1 class="hub-title">Escolha para onde ir: <em>controle da fazenda</em> ou <em>cadastro de propriedade</em>.</h1>
@@ -224,7 +219,6 @@
     </p>
   </section>
 
-  <!-- ─────────────── LIGAÇÃO VISUAL ─────────────── -->
   <div class="bridge-wrap" aria-hidden="true">
     <div class="bridge-line">
       <svg viewBox="0 0 900 46" preserveAspectRatio="none">
@@ -239,11 +233,8 @@
     </div>
   </div>
 
-  <!-- ─────────────── CARDS ─────────────── -->
   <main class="hub-main">
     <div class="access-grid">
-
-      <!-- CARD 1 — AgroMap Culturas -->
       <a class="access-card access-card--culturas" href="cultura.html">
         <div class="access-card-top">
           <div class="access-card-icon">
@@ -265,7 +256,6 @@
         </span>
       </a>
 
-      <!-- CARD 2 — AgroMap SP -->
       <a class="access-card access-card--sp" href="cadastro.html">
         <div class="access-card-top">
           <div class="access-card-icon">
@@ -286,16 +276,14 @@
           <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
       </a>
-
     </div>
   </main>
 
-  <!-- ─────────────── RODAPÉ ─────────────── -->
   <footer class="hub-footer">
     <span class="hub-footer-text">Página de integração — não faz parte de nenhum dos dois projetos originais.</span>
     <div class="hub-footer-links">
-      <a href="agromap-culturas/cultura.html">Culturas</a>
-      <a href="agromap-sp/cadastro.html">Cadastro SP</a>
+      <a href="cultura.html">Culturas</a>
+      <a href="cadastro.html">Cadastro SP</a>
     </div>
   </footer>
 
