@@ -69,6 +69,12 @@ export default function Fazendas() {
         </Link>
 
         <div className="topbar-right">
+          <Link to="/culturas" className="topbar-login">
+            Painel de culturas
+          </Link>
+          <Link to="/usuarios/novo" className="topbar-login">
+            + Novo administrador
+          </Link>
           <Link to="/cadastro" className="topbar-login">
             + Nova propriedade
           </Link>

@@ -5,6 +5,7 @@ import Cadastro from './pages/Cadastro'
 import Fazenda from './pages/Fazenda'
 import Fazendas from './pages/Fazendas'
 import Login from './pages/Login'
+import CadastroAdmin from './pages/CadastroAdmin'
 import RequireAuth from './components/RequireAuth'
 import { AuthProvider } from './auth'
 
@@ -15,8 +16,23 @@ function App() {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/culturas" element={<Culturas />} />
+          <Route
+            path="/culturas"
+            element={
+              <RequireAuth roles={['admin']}>
+                <Culturas />
+              </RequireAuth>
+            }
+          />
           <Route path="/cadastro" element={<Cadastro />} />
+          <Route
+            path="/usuarios/novo"
+            element={
+              <RequireAuth roles={['admin']}>
+                <CadastroAdmin />
+              </RequireAuth>
+            }
+          />
           <Route
             path="/fazenda/:id"
             element={

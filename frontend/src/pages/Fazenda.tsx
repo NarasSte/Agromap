@@ -385,10 +385,12 @@ export default function Fazenda() {
 
               {/* AÇÕES */}
               <div className="form-section confirm-actions">
-                <Link to="/culturas" className="btn-submit">
-                  <svg viewBox="0 0 16 16" fill="none" style={{ width: '15px', height: '15px' }}><path d="M2 8h12M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  Ir para o painel de culturas
-                </Link>
+                {isAdmin && (
+                  <Link to="/culturas" className="btn-submit">
+                    <svg viewBox="0 0 16 16" fill="none" style={{ width: '15px', height: '15px' }}><path d="M2 8h12M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    Ir para o painel de culturas
+                  </Link>
+                )}
                 {isAdmin && (
                   <>
                     <Link to="/cadastro" className="btn-outline">Cadastrar nova propriedade</Link>

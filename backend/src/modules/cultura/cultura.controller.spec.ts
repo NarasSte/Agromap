@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { JwtService } from '@nestjs/jwt';
 import { CulturaController } from './cultura.controller';
 import { CulturaService } from './cultura.service';
 import { Cultura } from '../../entities/cultura.entity';
@@ -13,6 +14,10 @@ describe('CulturaController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CulturaController],
       providers: [
+        {
+          provide: JwtService,
+          useValue: { verifyAsync: jest.fn() },
+        },
         {
           provide: CulturaService,
           useValue: {

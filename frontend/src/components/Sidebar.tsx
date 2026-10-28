@@ -87,7 +87,7 @@ export default function Sidebar({ active = 'dashboard' }: SidebarProps) {
   return (
     <aside className="sidebar">
       <div className="sidebar__brand">
-        <div className="brand-icon">
+        {/* <div className="brand-icon">
           <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <line x1="12" y1="4" x2="12" y2="32" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
             <line x1="24" y1="4" x2="24" y2="32" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
@@ -103,13 +103,13 @@ export default function Sidebar({ active = 'dashboard' }: SidebarProps) {
             <line x1="18" y1="18" x2="8" y2="28" stroke="var(--accent-green)" strokeWidth="1" strokeOpacity="0.5" />
             <line x1="18" y1="18" x2="28" y2="28" stroke="var(--accent-green)" strokeWidth="1" strokeOpacity="0.5" />
           </svg>
-        </div>
-        <div className="brand-text">
+        </div> */}
+        {/* <div className="brand-text">
           <span className="brand-name">
             Agro<strong>Map</strong>
           </span>
           <span className="brand-tagline">Controle Agrícola</span>
-        </div>
+        </div> */}
       </div>
 
       <nav className="sidebar__nav">

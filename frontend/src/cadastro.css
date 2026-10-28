@@ -661,6 +661,11 @@
   background: rgba(255,123,114,.08); border: 1px solid rgba(255,123,114,.3);
   border-radius: var(--radius-md); padding: 9px 12px;
 }
+.cadastro-page .login-success {
+  font-size: .78rem; color: var(--accent-green);
+  background: rgba(61,214,140,.08); border: 1px solid rgba(61,214,140,.3);
+  border-radius: var(--radius-md); padding: 9px 12px;
+}
 .cadastro-page .login-foot { font-size: .76rem; color: var(--text-muted); text-align: center; margin: 0; }
 .cadastro-page .login-foot a { color: var(--accent-green); text-decoration: none; }
 
