@@ -5,3 +5,6 @@ build/
 .env.local
 .env.*.local
 *.log
+
+# Vercel
+.vercel
