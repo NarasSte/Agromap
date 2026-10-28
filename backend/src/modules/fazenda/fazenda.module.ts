@@ -6,9 +6,13 @@ import { Fazenda } from '../../entities/fazenda.entity';
 import { Infraestrutura } from '../../entities/infraestrutura.entity';
 import { FazendaInfraestrutura } from '../../entities/fazenda-infraestrutura.entity';
 import { FazendaCultura } from '../../entities/fazenda-cultura.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Fazenda, Infraestrutura, FazendaInfraestrutura, FazendaCultura])],
+  imports: [
+    TypeOrmModule.forFeature([Fazenda, Infraestrutura, FazendaInfraestrutura, FazendaCultura]),
+    AuthModule,
+  ],
   controllers: [FazendaController],
   providers: [FazendaService],
   exports: [FazendaService],

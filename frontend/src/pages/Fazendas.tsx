@@ -3,17 +3,18 @@ import { Link } from 'react-router-dom'
 import '../cadastro.css'
 import { CULTURAS } from './Cadastro'
 import type { FazendaData } from './Fazenda'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+import { useAuthFetch } from '../auth'
+import UserMenu from '../components/UserMenu'
 
 export default function Fazendas() {
   const [fazendas, setFazendas] = useState<FazendaData[]>([])
   const [status, setStatus] = useState<'loading' | 'ok' | 'error'>('loading')
   const [query, setQuery] = useState('')
+  const authFetch = useAuthFetch()
 
   useEffect(() => {
     let cancelled = false
-    fetch(`${API_URL}/fazendas`)
+    authFetch('/fazendas')
       .then((res) => {
         if (!res.ok) throw new Error('Erro ao carregar fazendas')
         return res.json()
@@ -30,7 +31,7 @@ export default function Fazendas() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [authFetch])
 
   const q = query.trim().toLowerCase()
   const filtered = q
@@ -71,6 +72,7 @@ export default function Fazendas() {
           <Link to="/cadastro" className="topbar-login">
             + Nova propriedade
           </Link>
+          <UserMenu />
         </div>
       </header>
 

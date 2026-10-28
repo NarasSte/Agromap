@@ -24,6 +24,7 @@ import { TalhaoSoloModule } from './modules/talhao-solo/talhao-solo.module';
 import { RecomendacaoClimaModule } from './modules/recomendacao-clima/recomendacao-clima.module';
 import { InfraestruturaModule } from './modules/infraestrutura/infraestrutura.module';
 import { FazendaInfraestruturaModule } from './modules/fazenda-infraestrutura/fazenda-infraestrutura.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 // Entities
 import { Fazenda } from './entities/fazenda.entity';
@@ -48,10 +49,12 @@ import { RecomendacaoClima } from './entities/recomendacao-clima.entity';
 import { Infraestrutura } from './entities/infraestrutura.entity';
 import { FazendaInfraestrutura } from './entities/fazenda-infraestrutura.entity';
 import { FazendaCultura } from './entities/fazenda-cultura.entity';
+import { Usuario } from './entities/usuario.entity';
 
 import { AddCulturaColumns1788378529051 } from './migrations/1788378529051-AddCulturaColumns';
 import { AddFazendaCadastroFieldsAndInfraestrutura1790796560575 } from './migrations/1790796560575-AddFazendaCadastroFieldsAndInfraestrutura';
 import { AddFazendaCultura1791936000000 } from './migrations/1791936000000-AddFazendaCultura';
+import { AddUsuario1793100000000 } from './migrations/1793100000000-AddUsuario';
 
 @Module({
   imports: [
@@ -90,12 +93,14 @@ import { AddFazendaCultura1791936000000 } from './migrations/1791936000000-AddFa
           Infraestrutura,
           FazendaInfraestrutura,
           FazendaCultura,
+          Usuario,
         ],
         synchronize: false,
         migrations: [
           AddCulturaColumns1788378529051,
           AddFazendaCadastroFieldsAndInfraestrutura1790796560575,
           AddFazendaCultura1791936000000,
+          AddUsuario1793100000000,
         ],
         migrationsRun: true,
         logging: true,
@@ -123,6 +128,7 @@ import { AddFazendaCultura1791936000000 } from './migrations/1791936000000-AddFa
     RecomendacaoClimaModule,
     InfraestruturaModule,
     FazendaInfraestruturaModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
