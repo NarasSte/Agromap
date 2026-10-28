@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+import UserMenu from '../components/UserMenu'
+import { useAuthFetch } from '../auth'
+import '../cadastro.css'
 
 interface Culture {
   id: number
@@ -117,10 +119,11 @@ export default function Culturas() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [isViewing, setIsViewing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const authFetch = useAuthFetch()
 
   useEffect(() => {
     let cancelled = false
-    fetch(`${API_URL}/culturas`)
+    authFetch('/culturas')
       .then((res) => {
         if (!res.ok) throw new Error('Erro ao carregar culturas')
         return res.json()
@@ -135,7 +138,7 @@ export default function Culturas() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [authFetch])
 
   const active = useMemo(() => cultures.filter((c) => c.status === 'ativa'), [cultures])
   const totalArea = useMemo(() => cultures.reduce((sum, c) => sum + c.area, 0), [cultures])
@@ -169,7 +172,7 @@ export default function Culturas() {
       status: form.status,
     }
     try {
-      const res = await fetch(editingId ? `${API_URL}/culturas/${editingId}` : `${API_URL}/culturas`, {
+      const res = await authFetch(editingId ? `/culturas/${editingId}` : '/culturas', {
         method: editingId ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -190,7 +193,7 @@ export default function Culturas() {
   const remove = async (id: number) => {
     if (!confirm('Tem certeza que deseja excluir esta cultura?')) return
     try {
-      const res = await fetch(`${API_URL}/culturas/${id}`, { method: 'DELETE' })
+      const res = await authFetch(`/culturas/${id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error('Erro ao excluir cultura')
       setCultures((prev) => prev.filter((c) => c.id !== id))
     } catch (err) {
@@ -227,8 +230,48 @@ export default function Culturas() {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <Sidebar active="culturas" />
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <div className="cadastro-page" style={{ minHeight: 0, flex: 'none' }}>
+        <header className="topbar">
+          <Link to="/" className="topbar-brand">
+            <div className="topbar-brand-icon">
+              <svg viewBox="0 0 36 36" fill="none">
+                <line x1="12" y1="4" x2="12" y2="32" stroke="currentColor" strokeWidth="1.2" opacity=".5" />
+                <line x1="24" y1="4" x2="24" y2="32" stroke="currentColor" strokeWidth="1.2" opacity=".5" />
+                <line x1="4" y1="12" x2="32" y2="12" stroke="currentColor" strokeWidth="1.2" opacity=".5" />
+                <line x1="4" y1="24" x2="32" y2="24" stroke="currentColor" strokeWidth="1.2" opacity=".5" />
+                <circle cx="18" cy="18" r="3.5" fill="var(--accent-green)" />
+                <circle cx="8" cy="8" r="2" fill="var(--accent-blue)" opacity=".8" />
+                <circle cx="28" cy="8" r="2" fill="var(--accent-blue)" opacity=".8" />
+                <circle cx="8" cy="28" r="2" fill="var(--accent-blue)" opacity=".8" />
+                <circle cx="28" cy="28" r="2" fill="var(--accent-blue)" opacity=".8" />
+                <line x1="18" y1="18" x2="8" y2="8" stroke="var(--accent-green)" strokeWidth="1" opacity=".5" />
+                <line x1="18" y1="18" x2="28" y2="8" stroke="var(--accent-green)" strokeWidth="1" opacity=".5" />
+                <line x1="18" y1="18" x2="8" y2="28" stroke="var(--accent-green)" strokeWidth="1" opacity=".5" />
+                <line x1="18" y1="18" x2="28" y2="28" stroke="var(--accent-green)" strokeWidth="1" opacity=".5" />
+              </svg>
+            </div>
+            <span className="topbar-brand-name">Agro<em>Map</em></span>
+            <span className="topbar-brand-sp">SP</span>
+          </Link>
+
+          <div className="topbar-right">
+            <Link to="/fazendas" className="topbar-login">
+              Fazendas
+            </Link>
+            <Link to="/usuarios/novo" className="topbar-login">
+              + Novo administrador
+            </Link>
+            <Link to="/cadastro" className="topbar-login">
+              + Nova propriedade
+            </Link>
+            <UserMenu />
+          </div>
+        </header>
+      </div>
+
+      <div style={{ display: 'flex', flex: 1 }}>
+        <Sidebar active="culturas" />
 
       <main className="main">
         <header className="topbar">
@@ -504,6 +547,7 @@ export default function Culturas() {
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }
